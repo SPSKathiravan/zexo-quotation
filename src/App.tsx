@@ -24,6 +24,7 @@ import {
   Moon,
   Apple,
   Carrot,
+  ChevronLeft,
   LucideIcon,
 } from "lucide-react";
 
@@ -472,6 +473,15 @@ function Header({
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Collapse the mobile menu back into the hamburger icon as soon as the
+  // user starts scrolling, so it never stays open while browsing the page.
+  useEffect(() => {
+    if (!open) return;
+    const onScrollClose = () => setOpen(false);
+    window.addEventListener("scroll", onScrollClose, { passive: true });
+    return () => window.removeEventListener("scroll", onScrollClose);
+  }, [open]);
+
   const handleNavClick = (href: string) => {
     setOpen(false);
     if (href === "products") {
@@ -492,7 +502,7 @@ function Header({
 
   return (
     <div className={`ax-header-band ${scrolled ? "ax-header-band-scrolled" : ""}`}>
-      <div className="ax-header-bar">
+      <div className={`ax-header-bar ${open ? "ax-header-bar-menu-open" : ""}`}>
         <header className="ax-header">
           <div className="ax-header-inner">
             <a
@@ -1006,7 +1016,7 @@ function WeEnsure() {
 /* Single-page layout: category checklist on the left drives which products
    show on the right. No page navigation — everything reveals in place. */
 
-function ProductsPageView() {
+function ProductsPageView({ onNavigate }: { onNavigate: (page: string) => void }) {
   const [selectedCats, setSelectedCats] = useState<Set<string>>(new Set());
   const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set());
   const [priceMin, setPriceMin] = useState("");
@@ -1060,6 +1070,14 @@ function ProductsPageView() {
   return (
     <section className="ax-section" style={{ paddingTop: "160px" }}>
       <div className="ax-section-inner">
+        <button
+          className="ax-prod-back-btn"
+          onClick={() => onNavigate("home")}
+        >
+          <ChevronLeft size={18} />
+          Back to Home
+        </button>
+
         <Reveal className="ax-section-head">
           <p className="ax-eyebrow ax-eyebrow-accent">Premium Product Gallery</p>
           <h2 className="ax-h2">
@@ -1337,7 +1355,7 @@ export default function AgriXGlobal() {
             <WeEnsure />
           </>
         ) : (
-          <ProductsPageView />
+          <ProductsPageView onNavigate={handleNavigate} />
         )}
       </main>
       <Footer onNavigate={handleNavigate} />
@@ -1456,6 +1474,14 @@ function GlobalStyles() {
         box-shadow: 0 16px 40px -12px rgba(0,0,0,0.5);
       }
       .ax-header-band-scrolled .ax-header-bar { box-shadow: 0 20px 50px -10px rgba(0,0,0,0.8); border-color: rgba(255,255,255,0.15); }
+
+      /* When the mobile menu is expanded, the header switches from a pill
+         to a proper rounded rectangle so it never balloons into an oval. */
+      .ax-header-bar-menu-open {
+        border-radius: 28px;
+        width: min(92vw, 380px);
+        padding: 6px 6px 16px;
+      }
 
       .ax-root.light-mode .ax-header-bar {
         background: rgba(255, 255, 255, 0.85);
@@ -1676,6 +1702,17 @@ function GlobalStyles() {
         border-color: var(--accent-green);
         box-shadow: 0 12px 40px -8px rgba(16, 185, 129, 0.3);
       }
+
+      /* Back button on the Products page */
+      .ax-prod-back-btn {
+        display: inline-flex; align-items: center; gap: 6px;
+        background: rgba(255,255,255,0.05); border: 1px solid var(--border-light);
+        color: var(--text-primary); font-size: 13px; font-weight: 600;
+        padding: 10px 18px 10px 14px; border-radius: 999px; cursor: pointer;
+        font-family: 'Manrope', system-ui, sans-serif;
+        margin-bottom: 28px; transition: all 0.3s ease;
+      }
+      .ax-prod-back-btn:hover { border-color: var(--accent-green); color: var(--accent-green); transform: translateX(-2px); }
 
       /* Filter layout */
       .ax-filter-layout {
@@ -1968,6 +2005,24 @@ function GlobalStyles() {
 
         .ax-whatsapp-float { bottom: 20px; right: 20px; width: 50px; height: 50px; }
         .ax-whatsapp-float svg { width: 28px; height: 28px; }
+
+        /* Mobile menu dropdown: readable, evenly spaced, no overflow */
+        .ax-nav-mobile-link { font-size: 14px; padding: 12px 6px; }
+        .ax-nav-mobile .ax-cta { padding: 11px 18px; font-size: 13px; }
+
+        /* Back button + products page text/alignment cleanup for small screens */
+        .ax-prod-back-btn { width: 100%; justify-content: center; margin-bottom: 20px; }
+        .ax-filter-title { font-size: 16px; }
+        .ax-filter-name { font-size: 13px; }
+        .ax-filter-count { font-size: 12px; }
+        .ax-filter-status { flex-wrap: wrap; gap: 8px; }
+        .ax-mobile-filter-btn { font-size: 13px; padding: 11px 16px; }
+        .ax-filter-results-count { font-size: 13px; margin-bottom: 16px; }
+        .ax-prod-name { font-size: 14px; }
+        .ax-prod-tagline { font-size: 11px; }
+        .ax-prod-specs li { font-size: 11px; line-height: 1.5; }
+        .ax-prod-empty { padding: 60px 16px; }
+        .ax-prod-empty p { font-size: 14px; }
       }
 
       @media(max-width: 480px) {
