@@ -546,6 +546,14 @@ function Header({
             </button>
 
             <button
+              onClick={toggleLight}
+              className="ax-theme-toggle-mobile"
+              aria-label="Toggle theme"
+            >
+              {isLight ? <Moon size={16} /> : <Sun size={16} />}
+            </button>
+
+            <button
               className="ax-menu-btn"
               aria-label={open ? "Close menu" : "Open menu"}
               onClick={() => setOpen((v) => !v)}
@@ -568,13 +576,6 @@ function Header({
                 {l.label}
               </a>
             ))}
-            <button
-              onClick={() => { toggleLight(); setOpen(false); }}
-              className="ax-cta ax-cta-mobile"
-            >
-              {isLight ? <Moon size={15} /> : <Sun size={15} />}
-              {isLight ? "Dark Mode" : "Light Mode"}
-            </button>
           </div>
         </header>
       </div>
@@ -1528,6 +1529,19 @@ function GlobalStyles() {
 
       .ax-cta-desktop { display: none; }
 
+      /* Icon-only theme toggle shown directly in the mobile navbar,
+         next to the hamburger icon (not tucked inside the dropdown). */
+      .ax-theme-toggle-mobile {
+        display: flex; align-items: center; justify-content: center;
+        width: 38px; height: 38px; min-width: 38px; border-radius: 50%;
+        background: rgba(255,255,255,0.08); border: 1px solid var(--border-light);
+        color: var(--text-primary); cursor: pointer; margin-right: 4px; padding: 0;
+        transition: all 0.3s ease;
+      }
+      .ax-root.light-mode .ax-theme-toggle-mobile { background: rgba(0,0,0,0.05); }
+      .ax-theme-toggle-mobile:hover { border-color: var(--accent-green); color: var(--accent-green); }
+      .ax-theme-toggle-mobile:active { transform: scale(0.92); }
+
       .ax-menu-btn { display: flex; background: none; border: 0; color: var(--text-primary); padding: 8px; cursor: pointer; margin-right: 8px; transition: color 0.3s ease; }
       .ax-nav-mobile { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.2, 1, 0.3, 1); display: flex; flex-direction: column; gap: 4px; padding: 0 16px; }
       .ax-nav-mobile-open { max-height: 400px; padding-top: 16px; padding-bottom: 16px; }
@@ -1537,6 +1551,7 @@ function GlobalStyles() {
       @media(min-width: 900px) {
         .ax-nav-desktop { display: flex; }
         .ax-cta-desktop { display: inline-flex; }
+        .ax-theme-toggle-mobile { display: none; }
         .ax-menu-btn { display: none; }
         .ax-nav-mobile { display: none; }
       }
@@ -1995,6 +2010,7 @@ function GlobalStyles() {
         .ax-footer-contact { justify-content: center; }
         .ax-social-row { justify-content: center; }
         .ax-logo { justify-content: center; }
+        .ax-footer-desc { margin-left: auto; margin-right: auto; }
 
         .ax-filter-layout { flex-direction: column; gap: 24px; }
         .ax-mobile-filter-container { display: block; width: 100%; margin-bottom: 16px; }
