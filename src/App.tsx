@@ -1245,7 +1245,7 @@ function Footer({ onNavigate }: { onNavigate: (page: string) => void }) {
             About
           </a>
           <a
-            href="#"
+            href="#products"
             className="ax-footer-link"
             onClick={(e) => {
               e.preventDefault();
