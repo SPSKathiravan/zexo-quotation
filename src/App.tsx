@@ -17,16 +17,13 @@ import {
   MapPin,
   Mail,
   Phone,
-  ArrowRight,
   CheckCircle2,
   Menu,
   X,
-  Link2,
   Sun,
   Moon,
   Apple,
   Carrot,
-  Plane,
   LucideIcon,
 } from "lucide-react";
 
